@@ -163,3 +163,112 @@ _No license specified yet — consider adding one (e.g. MIT) to clarify usage te
 
 **Vividh Prabu**
 [GitHub](https://github.com/Vividh-Prabu)
+
+
+## VYOMINI SHETTY — Frontend Developer
+
+I was primarily responsible for the **frontend development and user interface of Prompt-Astra**. My contribution focused on designing and developing the security dashboard, prompt analysis interface, threat monitoring views, review interface, attack testing interface, model evaluation pages, and security settings.
+
+### Frontend and UI/UX
+
+* Developed the **Flask-based frontend dashboard** for Prompt-Astra.
+* Designed the overall dashboard layout, navigation, sidebar, cards, tables, modals, and page structure.
+* Developed the **cybersecurity-themed user interface** and overall visual presentation.
+* Implemented responsive layouts and navigation for different screen sizes.
+* Added interactive UI elements, animations, loading states, status indicators, and notifications.
+* Worked on improving the overall **UI/UX and user interaction flow**.
+
+### Prompt Analyzer
+
+* Developed the **Prompt Analyzer interface** for entering and testing prompts.
+* Designed the prompt input area and analysis result layout.
+* Implemented the display of security-analysis information such as:
+
+  * Risk Score
+  * Risk Level
+  * Confidence
+  * Attack Category
+  * Severity
+  * Decision
+  * Detection Signals
+  * Latency
+* Added **ALLOW, REVIEW, and BLOCK** visual indicators.
+* Implemented prompt character counting.
+* Added keyboard support for prompt submission.
+* Added predefined prompt and attack-test scenarios.
+* Developed the **Payload Sanitization and Safe Stream Recovery** interface.
+* Added a visual comparison between the original payload and sanitized payload.
+
+### Threat Monitor
+
+* Developed the **Threat Monitor interface** for displaying security events.
+* Designed the security-event table and its information layout.
+* Added search functionality for security events.
+* Implemented filtering options for attack type, severity, and decision.
+* Developed the detailed **event inspection interface** for viewing individual security events.
+
+### Review Queue
+
+* Developed the **Security Review Queue interface** for flagged prompts.
+* Designed the interface for reviewing quarantined or suspicious prompts.
+* Added detailed event inspection views.
+* Designed the interface for reviewer actions such as:
+
+  * Approve
+  * Reject
+  * Escalate
+* Added support for displaying analyst audit notes.
+* Implemented visual status indicators for reviewed events.
+
+### Attack Lab
+
+* Developed the **Attack Lab interface** for testing adversarial prompts.
+
+* Designed the visual security pipeline:
+
+  Attack Input → PromptGuard → Risk Analysis → Decision Gate → ARGUS
+
+* Added interactive attack-test scenarios.
+
+* Designed the visual representation of ALLOW, REVIEW, and BLOCK outcomes.
+
+* Added displays for risk score, confidence, latency, and security explanations.
+
+* Implemented visual indicators showing when a malicious payload is blocked.
+
+### Model Evaluation
+
+* Developed the **Model Evaluation interface** for presenting model performance.
+* Designed displays for:
+
+  * Accuracy
+  * Precision
+  * Recall
+  * F1 Score
+  * False Positive Rate (FPR)
+  * False Negative Rate (FNR)
+* Implemented the **confusion matrix visualization**.
+* Added category-level model performance displays.
+* Designed the evaluation page to present security-model performance clearly.
+
+### Security Settings and Policies
+
+* Developed the **Security Settings and Policies interface**.
+* Designed configurable security-threshold controls for ALLOW, REVIEW, and BLOCK decisions.
+* Added confidence-level policy controls.
+* Designed ARGUS integration and isolation status displays.
+* Added alert and telemetry preference controls.
+* Implemented interactive threshold sliders and policy controls.
+
+### Frontend Reliability and Interaction
+
+* Implemented frontend loading and empty states.
+* Added user-friendly error and notification messages.
+* Implemented interactive buttons, filters, modals, dropdowns, sliders, and navigation elements.
+* Added responsive behavior across different screen sizes.
+* Improved the consistency and usability of the overall dashboard.
+
+### Technologies Used
+
+**HTML, CSS, JavaScript, Jinja2, Flask, Git, GitHub, and VS Code**
+
