@@ -12,7 +12,7 @@
 - **Dual FastAPI backends** — `Backend/` (modular service) and `FastApi/` (single-file service), both writing to the same Supabase `security_events` table so you can run either depending on your deployment needs.
 - **Browser extension** (`Extension/`) — intercepts and analyzes prompts at the point of entry, before they reach an LLM provider.
 - **Live monitoring dashboard** (`frontend/`) — a Flask app with:
-  - Real-time KPIs and threat-distribution charts
+  - Real-time KPIs and threat-distribution charts.
   - A monitor feed of incoming prompt events
   - A review queue for triaging flagged prompts
   - Automatic **demo-mode fallback**: if Supabase isn't configured or is unreachable, the UI gracefully falls back to static demo data instead of crashing
