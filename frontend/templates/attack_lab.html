@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Attack Lab · PromptAstra PromptGuard{% endblock %}
+{% block page_title %}Attack Lab{% endblock %}
+{% block page_subtitle %}Test PromptGuard Against Adversarial AI Inputs & Verify ARGUS Defense{% endblock %}
+
+
+
+{% block content %}
+<div class="attack-lab-container">
+
+  <!-- =====================================================================
+       TOP PIPELINE INSPECTION DOCK
+       ===================================================================== -->
+  <section class="card pipeline-dock-card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span>Live Adversarial Pipeline Test Dock</span>
+        </h3>
+        <p class="card-subtitle">Select any attack scenario below to fire an adversarial payload through PromptGuard</p>
+      </div>
+      <div id="dockRunStatus" class="dock-status-idle font-mono">
+        <span class="status-dot dot-cyan"></span>
+        <span>AWAITING SCENARIO SELECTION</span>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Interactive Pipeline Visualizer -->
+      <div class="lab-pipeline-stage">
+        <!-- Node 1: Adversarial Input Payload -->
+        <div class="lab-node" id="labNodeInput">
+          <div class="lab-node-badge">STAGE 1</div>
+          <div class="lab-node-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            </svg>
+          </div>
+          <span class="lab-node-name">ATTACK INPUT</span>
+          <span class="lab-node-sub" id="labInputName">Select Scenario Below</span>
+        </div>
+
+        <div class="lab-link" id="labLink1">
+          <div class="lab-packet" id="labPacket1"></div>
+        </div>
+
+        <!-- Node 2: PromptGuard Gateway -->
+        <div class="lab-node" id="labNodeGateway">
+          <div class="lab-node-badge badge-blue">STAGE 2</div>
+          <div class="lab-node-icon icon-gateway">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <span class="lab-node-name">PROMPTGUARD</span>
+          <span class="lab-node-sub">Gateway Interception</span>
+        </div>
+
+        <div class="lab-link" id="labLink2">
+          <div class="lab-packet" id="labPacket2"></div>
+        </div>
+
+        <!-- Node 3: Heuristic & ML Risk Engine -->
+        <div class="lab-node" id="labNodeDetection">
+          <div class="lab-node-badge badge-indigo">STAGE 3</div>
+          <div class="lab-node-icon icon-analysis">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <span class="lab-node-name">RISK ANALYSIS</span>
+          <span class="lab-node-sub" id="labRiskStatus">Threat Scoring</span>
+        </div>
+
+        <div class="lab-link" id="labLink3">
+          <div class="lab-packet" id="labPacket3"></div>
+        </div>
+
+        <!-- Node 4: Policy Enforcement Gate -->
+        <div class="lab-node" id="labNodeGate">
+          <div class="lab-node-badge">STAGE 4</div>
+          <div class="lab-node-icon icon-gate" id="labGateIcon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <span class="lab-node-name">DECISION GATE</span>
+          <span class="lab-node-sub font-mono" id="labGateDecision">ALLOW / REVIEW / BLOCK</span>
+        </div>
+
+        <div class="lab-link" id="labLink4">
+          <div class="lab-packet" id="labPacket4"></div>
+        </div>
+
+        <!-- Node 5: ARGUS Isolation Target -->
+        <div class="lab-node" id="labNodeArgus">
+          <div class="lab-node-badge badge-green">PROTECTED TARGET</div>
+          <div class="lab-node-icon icon-argus" id="labArgusIcon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9"></circle>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+          <span class="lab-node-name">ARGUS CORE</span>
+          <span class="lab-node-sub" id="labArgusStatus">Isolated & Secure</span>
+        </div>
+      </div>
+
+      <!-- Live Test Execution Summary Box -->
+      <div id="labResultBanner" class="lab-result-box hide-lab-result">
+        <div class="lab-result-header">
+          <div class="result-title-group">
+            <span class="badge" id="labBadgeDecision">BLOCK</span>
+            <span class="lab-decision-title" id="labDecisionTitle">Payload Blocked At Perimeter</span>
+          </div>
+          <div class="lab-result-stats font-mono">
+            <span>Risk: <strong id="labScoreVal">96</strong>/100</span>
+            <span>Confidence: <strong id="labConfVal">98%</strong></span>
+            <span>Latency: <strong id="labLatencyVal">15.2ms</strong></span>
+          </div>
+        </div>
+        <p class="lab-result-explanation" id="labExplanation">
+          PromptGuard intercepted direct prompt injection targeting internal configuration.
+        </p>
+        <div class="lab-argus-assurance" id="labAssurance">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span id="labAssuranceText">ARGUS WAS NOT EXPOSED TO THE PAYLOAD</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       8 ADVERSARIAL SCENARIO CARDS
+       ===================================================================== -->
+  <section class="scenarios-section">
+    <div class="section-title-wrap">
+      <h3 class="section-title">Adversarial Attack Scenarios (8 Test Vectors)</h3>
+      <p class="section-desc">Click "Run Test" on any vector to simulate attack transmission through PromptGuard.</p>
+    </div>
+
+    <div class="scenarios-grid">
+      {% for scn in scenarios %}
+      <div class="card scenario-card" data-scenario-id="{{ scn.id }}">
+        <div class="scenario-card-header">
+          <div class="scenario-meta">
+            <span class="scenario-number">#{{ loop.index }}</span>
+            <span class="badge {% if scn.severity == 'CRITICAL' %}badge-critical{% elif scn.severity == 'HIGH' %}badge-high{% elif scn.severity == 'MEDIUM' %}badge-medium{% else %}badge-low{% endif %}">
+              {{ scn.severity }}
+            </span>
+          </div>
+          <span class="badge font-mono {% if scn.expected_decision == 'BLOCK' %}badge-block{% elif scn.expected_decision == 'REVIEW' %}badge-review{% else %}badge-allow{% endif %}">
+            EXPECTED: {{ scn.expected_decision }}
+          </span>
+        </div>
+
+        <div class="scenario-card-body">
+          <h4 class="scenario-name">{{ scn.name }}</h4>
+          <p class="scenario-desc">{{ scn.description }}</p>
+
+          <div class="payload-snippet-box">
+            <div class="payload-box-label">ATTACK PAYLOAD SAMPLE:</div>
+            <pre class="payload-text">{{ scn.sample_prompt }}</pre>
+          </div>
+        </div>
+
+        <div class="scenario-card-footer">
+          <button type="button" 
+                  class="btn btn-primary btn-sm btn-run-test" 
+                  data-prompt="{{ scn.sample_prompt | e }}"
+                  data-name="{{ scn.name }}"
+                  data-category="{{ scn.category }}">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span>Run Test</span>
+          </button>
+
+          <a href="{{ url_for('analyzer') }}" class="btn btn-outline btn-sm btn-inspect-analyzer" title="Open in Prompt Analyzer">
+            <span>Inspect &rarr;</span>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/attack_lab.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,23 @@
+# Secrets — never commit real environment files
+.env
+*/.env
+**/.env
+!*/.env.example
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# OS / editor junk
+.DS_Store
+__MACOSX/
+.vscode/
+
+# Local demo DB / logs
+*.db
+*.log

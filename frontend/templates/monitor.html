@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Threat Monitor · PromptAstra PromptGuard{% endblock %}
+{% block page_title %}Threat Monitor{% endblock %}
+{% block page_subtitle %}Real-Time Adversarial Telemetry & Deep Packet Inspection{% endblock %}
+
+{% block content %}
+<div class="monitor-container">
+
+  <!-- =====================================================================
+       TOP TELEMETRY OVERVIEW SUMMARY
+       ===================================================================== -->
+  <section class="kpi-grid-5">
+    <div class="card mini-kpi">
+      <span class="mini-kpi-title">TOTAL THREATS</span>
+      <span class="mini-kpi-num text-white">{{ "{:,}".format(stats.kpis.threats_detected if stats and stats.kpis and stats.kpis.threats_detected is defined else threats|length) }}</span>
+      <span class="mini-kpi-sub">Across all vectors</span>
+    </div>
+
+    <div class="card mini-kpi">
+      <span class="mini-kpi-title">CRITICAL SEVERITY</span>
+      <span class="mini-kpi-num text-crimson">7,770</span>
+      <span class="mini-kpi-sub">Injection & Jailbreaks</span>
+    </div>
+
+    <div class="card mini-kpi">
+      <span class="mini-kpi-title">BLOCKED AT PERIMETER</span>
+      <span class="mini-kpi-num text-crimson">{{ "{:,}".format(stats.kpis.requests_blocked if stats and stats.kpis and stats.kpis.requests_blocked is defined else 0) }}</span>
+      <span class="mini-kpi-sub text-emerald">ARGUS Defended</span>
+    </div>
+
+    <div class="card mini-kpi">
+      <span class="mini-kpi-title">AWAITING REVIEW</span>
+      <span class="mini-kpi-num text-amber">{{ stats.kpis.review_queue_pending if stats and stats.kpis and stats.kpis.review_queue_pending is defined else 0 }}</span>
+      <span class="mini-kpi-sub">Human validation</span>
+    </div>
+
+    <div class="card mini-kpi">
+      <span class="mini-kpi-title">AVG THREAT RISK</span>
+      <span class="mini-kpi-num text-cyan">91.4</span>
+      <span class="mini-kpi-sub">Critical threat index</span>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       FILTER & SEARCH WORKBENCH
+       ===================================================================== -->
+  <section class="card filter-card">
+    <div class="filter-bar">
+      <!-- Search Input -->
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="threatSearchInput" class="search-input" placeholder="Search by payload snippet, threat ID, or keywords...">
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="filterAttackType" class="filter-label">Attack Type:</label>
+          <select id="filterAttackType" class="filter-select">
+            <option value="ALL">All Categories</option>
+            <option value="Prompt Injection">Prompt Injection</option>
+            <option value="Jailbreak">Jailbreak</option>
+            <option value="Indirect Injection">Indirect Injection</option>
+            <option value="Obfuscation">Obfuscation</option>
+            <option value="Tool Manipulation">Tool Manipulation</option>
+            <option value="Instruction Override">Instruction Override</option>
+            <option value="Benign Request">Benign Request</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterDecision" class="filter-label">Decision:</label>
+          <select id="filterDecision" class="filter-select">
+            <option value="ALL">All Decisions</option>
+            <option value="BLOCK">BLOCK</option>
+            <option value="REVIEW">REVIEW</option>
+            <option value="ALLOW">ALLOW</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterSeverity" class="filter-label">Severity:</label>
+          <select id="filterSeverity" class="filter-select">
+            <option value="ALL">All Severities</option>
+            <option value="CRITICAL">CRITICAL</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+          </select>
+        </div>
+
+        <button id="btnResetFilters" class="btn btn-outline btn-sm">
+          Reset Filters
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       HIGH-DENSITY TELEMETRY TABLE
+       ===================================================================== -->
+  <section class="card table-card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">Interception Telemetry Stream</h3>
+        <p class="card-subtitle">Real-time log of security evaluations and perimeter actions</p>
+      </div>
+      <div class="live-stream-badge">
+        <span class="status-dot pulse-emerald"></span>
+        <span>STREAMING TELEMETRY (LIVE / DEMO)</span>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table" id="monitorTable">
+        <thead>
+          <tr>
+            <th>Event ID</th>
+            <th>Timestamp</th>
+            <th>Attack Category</th>
+            <th>Severity</th>
+            <th>Prompt Payload Preview</th>
+            <th>Risk</th>
+            <th>Confidence</th>
+            <th>Decision</th>
+            <th>ARGUS Protection</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="monitorTableBody">
+          {% for threat in threats %}
+          <tr data-id="{{ threat.id or threat.event_id or 'THR-0000' }}" 
+              data-type="{{ threat.attack_type or threat.category or 'Unknown' }}" 
+              data-decision="{{ threat.decision or 'BLOCK' }}" 
+              data-severity="{{ threat.severity or 'LOW' }}"
+              data-json="{{ threat | tojson | forceescape }}">
+            <td class="font-mono text-cyan font-semibold">{{ threat.id or threat.event_id or 'THR-0000' }}</td>
+            <td class="time-cell">{{ threat.timestamp or threat.created_at or 'Just now' }}</td>
+            <td>
+              <span class="font-semibold text-primary">{{ threat.attack_type or threat.category or 'Benign Request' }}</span>
+            </td>
+            <td>
+              {% set sev = (threat.severity or 'LOW') | upper %}
+              <span class="badge {% if sev == 'CRITICAL' %}badge-critical{% elif sev == 'HIGH' %}badge-high{% elif sev == 'MEDIUM' %}badge-medium{% else %}badge-low{% endif %}">
+                {{ sev }}
+              </span>
+            </td>
+            <td class="snippet-cell font-mono text-slate-300" title="{{ threat.prompt_snippet or threat.prompt or threat.payload or '' }}">
+              {{ threat.prompt_snippet or threat.prompt or threat.payload or threat.prompt_text or threat.input_text or '[Empty Payload]' }}
+            </td>
+            <td>
+              {% set r_score = threat.risk_score | default(threat.risk | default(0)) | int %}
+              <span class="score-indicator {% if r_score >= 75 %}score-danger{% elif r_score >= 40 %}score-warning{% else %}score-safe{% endif %}">
+                {{ r_score }}
+              </span>
+            </td>
+            <td class="font-mono text-secondary">{{ threat.confidence or 95 }}%</td>
+            <td>
+              {% set dec = (threat.decision or 'ALLOW') | upper %}
+              <span class="badge {% if dec == 'BLOCK' %}badge-block{% elif dec == 'REVIEW' %}badge-review{% else %}badge-allow{% endif %}">
+                {{ dec }}
+              </span>
+            </td>
+            <td>
+              {% if threat.argus_exposed or dec == 'ALLOW' %}
+                <span class="argus-tag tag-forwarded">
+                  <span class="status-dot dot-allow"></span>
+                  <span>Forwarded</span>
+                </span>
+              {% else %}
+                <span class="argus-tag tag-defended">
+                  <span class="status-dot dot-block"></span>
+                  <span>Zero Exposure</span>
+                </span>
+              {% endif %}
+            </td>
+            <td>
+              <button type="button" class="btn btn-outline btn-sm btn-inspect-threat" data-id="{{ threat.id or threat.event_id or 'THR-0000' }}">
+                Inspect
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty Table State -->
+    <div id="monitorEmptyState" class="empty-state hide-empty">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <div class="empty-title">No Events Match Your Filters</div>
+      <div class="empty-subtitle">Try adjusting your search keywords, attack type, or severity filters.</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       DEEP PACKET INSPECTION MODAL
+       ===================================================================== -->
+  <div id="threatInspectModal" class="modal-overlay hide-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="badge badge-block" id="modalDecisionBadge">BLOCK</span>
+          <h3 class="modal-title" id="modalEventId">Event Inspection</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnModalClose">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-top-grid">
+          <div>
+            <span class="modal-lbl">ATTACK CATEGORY:</span>
+            <div class="modal-val font-semibold" id="modalAttackType">Prompt Injection</div>
+          </div>
+          <div>
+            <span class="modal-lbl">TIMESTAMP:</span>
+            <div class="modal-val font-mono" id="modalTimestamp">2026-09-07 20:12:44</div>
+          </div>
+          <div>
+            <span class="modal-lbl">RISK SCORE:</span>
+            <div class="modal-val font-mono font-bold text-crimson" id="modalRiskScore">96 / 100</div>
+          </div>
+          <div>
+            <span class="modal-lbl">ARGUS INTEGRITY:</span>
+            <div class="modal-val font-mono font-bold text-emerald" id="modalArgusStatus">ZERO EXPOSURE</div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <span class="modal-lbl">FULL PAYLOAD CONTENT:</span>
+          <pre class="modal-code-box" id="modalPayload"></pre>
+        </div>
+
+        <div class="modal-section">
+          <span class="modal-lbl">SECURITY EXPLANATION:</span>
+          <p class="modal-explanation-text" id="modalExplanation"></p>
+        </div>
+
+        <div class="modal-section">
+          <span class="modal-lbl">DETECTED SIGNALS:</span>
+          <ul class="modal-signals-list" id="modalSignalsList"></ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnModalDismiss">Close</button>
+        <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-sm">Open in Prompt Analyzer</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/monitor.js') }}"></script>
+{% endblock %}

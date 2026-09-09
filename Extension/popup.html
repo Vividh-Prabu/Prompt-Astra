@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptAstra</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="extension-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#38bdf8" stroke-width="2.2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <span class="brand-title">Prompt<strong>Astra</strong></span>
+      </div>
+      <div class="status-wrap">
+        <span class="pulse-dot"></span>
+        <span class="status-badge" id="scanState">LIVE STREAM</span>
+      </div>
+    </header>
+
+    <!-- Real-time Input Section -->
+    <main class="main-body">
+      <div class="label-row">
+        <label for="promptInput" class="input-label">REAL-TIME PROMPT INSPECTION</label>
+        <button id="clearBtn" class="clear-link" title="Clear input">Clear</button>
+      </div>
+      
+      <textarea id="promptInput" placeholder="Type or paste prompt here to inspect live..."></textarea>
+
+      <!-- Live Inspection Result Box -->
+      <div id="resultBox" class="result-box">
+        <div class="decision-row">
+          <span id="decisionBadge" class="badge badge-IDLE">READY</span>
+          <span id="latencyText" class="latency">0ms</span>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric">
+            <span class="m-label">RISK SCORE</span>
+            <span id="riskScore" class="m-value">--/100</span>
+          </div>
+          <div class="metric">
+            <span class="m-label">CATEGORY</span>
+            <span id="threatCategory" class="m-value">Idle</span>
+          </div>
+        </div>
+
+        <div id="explanationText" class="explanation">Start typing to stream threat signals in real time.</div>
+
+        <!-- Safe Sanitized Diff Recovery -->
+        <div id="sanitizedWrap" class="sanitized-wrap hidden">
+          <div class="sanitized-header">
+            <span class="sanitized-label">SANITIZED PAYLOAD:</span>
+            <button id="copySanitizedBtn" class="copy-btn">Copy</button>
+          </div>
+          <div id="sanitizedText" class="sanitized-content"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

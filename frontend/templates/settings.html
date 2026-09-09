@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Settings · PromptAstra PromptGuard{% endblock %}
+{% block page_title %}Settings & Policies{% endblock %}
+{% block page_subtitle %}Security Governance, Threshold Tuning, and ARGUS Gateway Integration{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+
+  <!-- =====================================================================
+       POLICY MAPPING BANNER
+       ===================================================================== -->
+  <section class="card policy-banner-card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">Enforced Gateway Security Policy</h3>
+        <p class="card-subtitle">Zero-trust decision routing configured for downstream ARGUS protection</p>
+      </div>
+      <span class="badge badge-allow font-mono">POLICY: ENFORCING</span>
+    </div>
+
+    <div class="card-body">
+      <div class="policy-flow-grid">
+        <!-- Rule 1: Low Risk -->
+        <div class="policy-rule-box rule-allow">
+          <div class="rule-range font-mono" id="policyAllowRange">RISK &lt; 40</div>
+          <div class="rule-action">
+            <span class="badge badge-allow">ALLOW</span>
+          </div>
+          <div class="rule-desc">
+            Benign user prompt. Verified safe and forwarded directly to <strong>ARGUS Core</strong>.
+          </div>
+        </div>
+
+        <!-- Rule 2: Medium Risk -->
+        <div class="policy-rule-box rule-review">
+          <div class="rule-range font-mono" id="policyReviewRange">RISK 40 – 74</div>
+          <div class="rule-action">
+            <span class="badge badge-review">REVIEW</span>
+          </div>
+          <div class="rule-desc">
+            Borderline or ambiguous input. Quarantined in <strong>Review Queue</strong> for SOC analyst validation.
+          </div>
+        </div>
+
+        <!-- Rule 3: High/Critical Risk -->
+        <div class="policy-rule-box rule-block">
+          <div class="rule-range font-mono" id="policyBlockRange">RISK &ge; 75</div>
+          <div class="rule-action">
+            <span class="badge badge-block">BLOCK</span>
+          </div>
+          <div class="rule-desc">
+            Adversarial payload intercepted. Dropped at perimeter; <strong>ARGUS has zero exposure</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SETTINGS FORMS
+       ===================================================================== -->
+  <div class="settings-grid">
+
+    <!-- Detection Thresholds -->
+    <div class="card settings-section-card">
+      <div class="card-header">
+        <h3 class="card-title">Detection Thresholds</h3>
+      </div>
+      <div class="card-body form-body">
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="threshBlock">Block Threshold (Risk Score &ge;)</label>
+            <span class="form-val font-mono" id="valThreshBlock">75</span>
+          </div>
+          <input type="range" id="threshBlock" class="range-slider" min="50" max="95" value="75">
+          <span class="form-hint">Prompts with score at or above this value are rejected at the gateway.</span>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="threshReview">Review Threshold (Risk Score &ge;)</label>
+            <span class="form-val font-mono" id="valThreshReview">40</span>
+          </div>
+          <input type="range" id="threshReview" class="range-slider" min="20" max="65" value="40">
+          <span class="form-hint">Prompts scoring between Review and Block thresholds require human triage.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="minConfidence">Minimum Confidence Floor</label>
+          <select id="minConfidence" class="filter-select select-full">
+            <option value="80">80% Confidence (Strict)</option>
+            <option value="70" selected>70% Confidence (Balanced - Default)</option>
+            <option value="60">60% Confidence (Aggressive)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARGUS Protection & Gateway Integration -->
+    <div class="card settings-section-card">
+      <div class="card-header">
+        <h3 class="card-title">ARGUS Integration Gateway</h3>
+      </div>
+      <div class="card-body form-body">
+        <div class="form-group">
+          <label class="form-label">Protected Downstream Target</label>
+          <div class="read-only-pill">
+            <span class="text-white font-semibold">ARGUS AI Decision Core</span>
+            <span class="badge badge-low">CONNECTED (ISOLATED)</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="argusEndpoint">ARGUS Dispatch Endpoint</label>
+          <input type="text" id="argusEndpoint" class="search-input" value="https://internal-mesh.argus.enterprise/v1/decisions" readonly>
+          <span class="form-hint">Only verified ALLOW requests are transmitted to this internal URI.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Perimeter Isolation Boundary</label>
+          <div class="toggle-row">
+            <span class="toggle-label">Strict Payload Interception (Zero Exposure)</span>
+            <span class="badge badge-block">ENFORCED</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interface & Alert Preferences -->
+    <div class="card settings-section-card">
+      <div class="card-header">
+        <h3 class="card-title">Alert & Telemetry Preferences</h3>
+      </div>
+      <div class="card-body form-body">
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Instant High-Severity Toast Alerts</div>
+            <div class="form-hint">Trigger UI popups when critical injection is simulated</div>
+          </div>
+          <input type="checkbox" id="prefToasts" checked class="checkbox-input">
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Auditing & Telemetry Log Retention</div>
+            <div class="form-hint">Store recent 200 payload records for forensic audit</div>
+          </div>
+          <input type="checkbox" id="prefRetention" checked class="checkbox-input">
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Brand Opening Animation</div>
+            <div class="form-hint">Show executive PROMPTASTRA intro reveal upon session init</div>
+          </div>
+          <button type="button" id="btnResetIntro" class="btn btn-outline btn-sm">
+            Reset Intro Session
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Telemetry Information -->
+    <div class="card settings-section-card">
+      <div class="card-header">
+        <h3 class="card-title">System & Telemetry Metadata</h3>
+      </div>
+      <div class="card-body form-body">
+        <div class="status-kv-list">
+          <div class="status-kv">
+            <span class="kv-key">Platform Brand:</span>
+            <span class="kv-val text-white">PROMPTASTRA</span>
+          </div>
+          <div class="status-kv">
+            <span class="kv-key">Security Gateway:</span>
+            <span class="kv-val text-cyan">PROMPTGUARD v2.4</span>
+          </div>
+          <div class="status-kv">
+            <span class="kv-key">Target System:</span>
+            <span class="kv-val text-emerald">ARGUS CORE</span>
+          </div>
+          <div class="status-kv">
+            <span class="kv-key">Engine State:</span>
+            <span class="kv-val badge-demo">DEMO MODE (HEURISTIC)</span>
+          </div>
+          <div class="status-kv">
+            <span class="kv-key">ML Backend Swapping:</span>
+            <span class="kv-val font-mono text-cyan">PROMPTGUARD_API_URL</span>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button type="button" id="btnSaveSettings" class="btn btn-primary btn-sm">
+            Save Preferences (Demo)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

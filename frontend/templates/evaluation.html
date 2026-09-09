@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluation · PromptAstra PromptGuard{% endblock %}
+{% block page_title %}Model Evaluation{% endblock %}
+{% block page_subtitle %}Security Gateway Accuracy, Precision, and Adversarial Benchmarks{% endblock %}
+
+
+
+{% block content %}
+<div class="evaluation-container">
+
+  <!-- =====================================================================
+       DATASET TRANSPARENCY BANNER
+       ===================================================================== -->
+  <section class="card dataset-banner">
+    <div class="banner-info">
+      <div class="dataset-badge">
+        <span class="status-dot dot-allow"></span>
+        <span>SAMPLE BENCHMARK DATASET</span>
+      </div>
+      <h3 class="dataset-title">{{ metrics.dataset_label }}</h3>
+      <p class="dataset-desc">
+        Metrics computed across 10,000 balanced test samples comprising direct prompt injections, 
+        indirect multi-turn payloads, jailbreaks, data exfiltration vectors, and legitimate enterprise DevOps queries.
+      </p>
+    </div>
+    <div class="dataset-sample-pill">
+      <span class="font-mono text-cyan text-16 font-bold">10,000</span>
+      <span class="text-muted text-11">Total Evaluated Cases</span>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CORE PERFORMANCE METRIC TILES
+       ===================================================================== -->
+  <section class="eval-metric-grid">
+    <div class="card eval-card">
+      <div class="eval-card-header">
+        <span class="eval-title">ACCURACY</span>
+        <span class="badge badge-low">Balanced</span>
+      </div>
+      <div class="eval-num font-mono text-emerald">{{ metrics.accuracy }}%</div>
+      <div class="eval-sub">Overall correct classifications</div>
+    </div>
+
+    <div class="card eval-card">
+      <div class="eval-card-header">
+        <span class="eval-title">PRECISION</span>
+        <span class="badge badge-low">Low FP</span>
+      </div>
+      <div class="eval-num font-mono text-cyan">{{ metrics.precision }}%</div>
+      <div class="eval-sub">True malicious / Flagged ratio</div>
+    </div>
+
+    <div class="card eval-card">
+      <div class="eval-card-header">
+        <span class="eval-title">RECALL</span>
+        <span class="badge badge-low">Interception</span>
+      </div>
+      <div class="eval-num font-mono text-cyan">{{ metrics.recall }}%</div>
+      <div class="eval-sub">Adversarial payload capture rate</div>
+    </div>
+
+    <div class="card eval-card">
+      <div class="eval-card-header">
+        <span class="eval-title">F1 SCORE</span>
+        <span class="badge badge-low">Harmonic</span>
+      </div>
+      <div class="eval-num font-mono text-emerald">{{ metrics.f1_score }}%</div>
+      <div class="eval-sub">Harmonic mean of P & R</div>
+    </div>
+
+    <div class="card eval-card">
+      <div class="eval-card-header">
+        <span class="eval-title">FALSE POSITIVE RATE</span>
+        <span class="badge badge-medium">1.2%</span>
+      </div>
+      <div class="eval-num font-mono text-amber">{{ metrics.false_positive_rate }}%</div>
+      <div class="eval-sub">Benign queries blocked</div>
+    </div>
+
+    <div class="card eval-card">
+      <div class="eval-card-header">
+        <span class="eval-title">FALSE NEGATIVE RATE</span>
+        <span class="badge badge-critical">1.1%</span>
+      </div>
+      <div class="eval-num font-mono text-crimson">{{ metrics.false_negative_rate }}%</div>
+      <div class="eval-sub">Adversarial leaks to ARGUS</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CONFUSION MATRIX & CATEGORY ACCURACY
+       ===================================================================== -->
+  <section class="matrix-row">
+    <!-- Confusion Matrix -->
+    <div class="card matrix-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">2x2 Confusion Matrix</h3>
+          <p class="card-subtitle">Predicted vs. Actual classifications on test dataset</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="confusion-grid">
+          <div class="matrix-cell cell-header"></div>
+          <div class="matrix-cell cell-col-head">PREDICTED MALICIOUS</div>
+          <div class="matrix-cell cell-col-head">PREDICTED BENIGN</div>
+
+          <div class="matrix-cell cell-row-head">ACTUAL MALICIOUS</div>
+          <div class="matrix-cell cell-quadrant quad-tp">
+            <span class="quad-label">TRUE POSITIVE (TP)</span>
+            <span class="quad-num font-mono text-emerald">{{ "{:,}".format(metrics.confusion_matrix.true_positive) }}</span>
+            <span class="quad-desc">Malicious payloads blocked</span>
+          </div>
+          <div class="matrix-cell cell-quadrant quad-fn">
+            <span class="quad-label">FALSE NEGATIVE (FN)</span>
+            <span class="quad-num font-mono text-crimson">{{ "{:,}".format(metrics.confusion_matrix.false_negative) }}</span>
+            <span class="quad-desc">Bypassed to ARGUS (Leak)</span>
+          </div>
+
+          <div class="matrix-cell cell-row-head">ACTUAL BENIGN</div>
+          <div class="matrix-cell cell-quadrant quad-fp">
+            <span class="quad-label">FALSE POSITIVE (FP)</span>
+            <span class="quad-num font-mono text-amber">{{ "{:,}".format(metrics.confusion_matrix.false_positive) }}</span>
+            <span class="quad-desc">Legitimate prompt false block</span>
+          </div>
+          <div class="matrix-cell cell-quadrant quad-tn">
+            <span class="quad-label">TRUE NEGATIVE (TN)</span>
+            <span class="quad-num font-mono text-cyan">{{ "{:,}".format(metrics.confusion_matrix.true_negative) }}</span>
+            <span class="quad-desc">Benign queries forwarded</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Performance Table -->
+    <div class="card cat-perf-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Category Detection Accuracy</h3>
+          <p class="card-subtitle">Performance across distinct adversarial threat families</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="cat-perf-list">
+          {% for cat in metrics.category_performance %}
+          <div class="cat-row">
+            <div class="cat-info">
+              <span class="cat-name">{{ cat.category }}</span>
+              <span class="cat-score font-mono text-emerald">{{ cat.accuracy }}%</span>
+            </div>
+            <div class="cat-bar-track">
+              <div class="cat-bar-fill" style="width: {{ cat.accuracy }}%;"></div>
+            </div>
+            <div class="cat-meta">
+              <span>{{ "{:,}".format(cat.detected) }} / {{ "{:,}".format(cat.tested) }} detected</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/evaluation.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,5 @@
+flask>=3.0.0
+# Supabase integration for live security_events (optional at runtime —
+# the UI falls back to local demo data if these aren't configured).
+supabase>=2.4.0
+python-dotenv>=1.0.0

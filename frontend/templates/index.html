@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block title %}Security Overview · PromptAstra PromptGuard{% endblock %}
+{% block page_title %}Security Overview{% endblock %}
+{% block page_subtitle %}Real-Time AI Input Threat Telemetry & ARGUS Protection Flow{% endblock %}
+
+
+
+{% block content %}
+<div class="dashboard-container">
+
+  <!-- =====================================================================
+       PRIMARY BANNER: PROMPTGUARD ENFORCEMENT & ARGUS ISOLATION
+       ===================================================================== -->
+  <section class="security-banner">
+    <div class="banner-content">
+      <div class="banner-status-pill">
+        <span class="status-dot-pulse"></span>
+        <span>PROMPTGUARD ACTIVE · ENFORCING PERIMETER</span>
+      </div>
+      <h1 class="banner-headline">PromptGuard Protection Active</h1>
+      <p class="banner-subtext">
+        All inbound prompts pass through PromptGuard multi-signal threat evaluation. 
+        <strong class="text-white">Malicious or unsafe inputs are blocked at the perimeter</strong> and cannot expose downstream ARGUS systems.
+      </p>
+    </div>
+    <div class="banner-stats-pill">
+      <div class="shield-counter">
+        <svg class="shield-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <polyline points="9 12 11 14 15 10"></polyline>
+        </svg>
+        <div class="counter-text">
+          <span class="counter-label">ARGUS INTEGRITY</span>
+          <span class="counter-val text-emerald">100% UNCOMPROMISED</span>
+        </div>
+      </div>
+      <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-sm">
+        <span>Test Adversarial Prompt &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CORE ARCHITECTURAL VISUALIZATION: ARGUS PROTECTION FLOW
+       ===================================================================== -->
+  <section class="card protection-flow-card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span>ARGUS Security Gateway Architecture</span>
+        </h3>
+        <p class="card-subtitle">Zero-trust AI input boundary. Inspection occurs before execution.</p>
+      </div>
+      <div class="flow-legend">
+        <span class="legend-item"><span class="legend-dot dot-allow"></span> Allow &rarr; ARGUS</span>
+        <span class="legend-item"><span class="legend-dot dot-review"></span> Review &rarr; Human</span>
+        <span class="legend-item"><span class="legend-dot dot-block"></span> Block &cross; Quarantined</span>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <div class="pipeline-diagram">
+        <!-- Node 1: User / External Input -->
+        <div class="pipeline-node node-user">
+          <div class="node-icon-box">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <span class="node-title">USER / APP</span>
+          <span class="node-desc">Inbound Raw Input</span>
+        </div>
+
+        <div class="pipeline-arrow arrow-active">
+          <div class="arrow-line"></div>
+          <div class="arrow-packet"></div>
+        </div>
+
+        <!-- Node 2: PromptGuard Gateway Boundary -->
+        <div class="pipeline-node node-gateway">
+          <div class="node-chip-top">GATEWAY BOUNDARY</div>
+          <div class="node-icon-box box-gateway">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <span class="node-title">PROMPTGUARD</span>
+          <span class="node-desc">Heuristic & ML Inspector</span>
+        </div>
+
+        <div class="pipeline-arrow">
+          <div class="arrow-line"></div>
+          <div class="arrow-packet"></div>
+        </div>
+
+        <!-- Node 3: Multi-Signal Threat Analysis -->
+        <div class="pipeline-node node-analysis">
+          <div class="node-icon-box box-analysis">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </div>
+          <span class="node-title">THREAT ANALYSIS</span>
+          <span class="node-desc">Signal Scoring (0-100)</span>
+        </div>
+
+        <div class="pipeline-arrow">
+          <div class="arrow-line"></div>
+        </div>
+
+        <!-- Node 4: Decision Gates Split -->
+        <div class="pipeline-decision-stack">
+          <!-- Branch 1: ALLOW -->
+          <div class="decision-branch branch-allow">
+            <div class="branch-pill">
+              <span class="branch-status">ALLOW</span>
+              <span class="branch-target">Forward to ARGUS &rarr;</span>
+            </div>
+            <div class="branch-line line-allow"></div>
+          </div>
+
+          <!-- Branch 2: REVIEW -->
+          <div class="decision-branch branch-review">
+            <div class="branch-pill">
+              <span class="branch-status">REVIEW</span>
+              <span class="branch-target">Human Quarantine &rarr;</span>
+            </div>
+            <div class="branch-line line-review"></div>
+          </div>
+
+          <!-- Branch 3: BLOCK -->
+          <div class="decision-branch branch-block">
+            <div class="branch-pill">
+              <span class="branch-status">BLOCK</span>
+              <span class="branch-target">Isolated at Perimeter &cross;</span>
+            </div>
+            <div class="branch-line line-block"></div>
+          </div>
+        </div>
+
+        <!-- Node 5: Protected System ARGUS -->
+        <div class="pipeline-node node-argus">
+          <div class="node-badge-protected">PROTECTED DESTINATION</div>
+          <div class="node-icon-box box-argus">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9"></circle>
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M12 3v3m0 12v3M3 12h3m12 0h3"></path>
+            </svg>
+          </div>
+          <span class="node-title">ARGUS</span>
+          <span class="node-desc">Protected Decision Core</span>
+          <div class="node-footer-status text-emerald">
+            <span class="status-dot pulse-emerald"></span>
+            <span>Zero Payload Exposure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       OPERATIONAL KPI CARDS
+       ===================================================================== -->
+  <section class="kpi-grid">
+    <!-- Total Requests -->
+    <div class="card kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">TOTAL REQUESTS</span>
+        <span class="kpi-trend trend-neutral">24h telemetry</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number" id="kpi-total">{{ "{:,}".format(stats.kpis.total_requests) }}</span>
+        <div class="kpi-subtext">Clean traffic + Adversarial inputs</div>
+      </div>
+    </div>
+
+    <!-- Threats Detected -->
+    <div class="card kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">THREATS DETECTED</span>
+        <span class="badge badge-critical">Active Scan</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number text-crimson" id="kpi-threats">{{ "{:,}".format(stats.kpis.threats_detected) }}</span>
+        <div class="kpi-subtext">Across 7 adversarial categories</div>
+      </div>
+    </div>
+
+    <!-- Requests Blocked (Dominant Security Metric) -->
+    <div class="card kpi-card kpi-highlight-block">
+      <div class="kpi-header">
+        <span class="kpi-title text-crimson">REQUESTS BLOCKED</span>
+        <span class="badge badge-block">Blocked at Gateway</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number text-crimson" id="kpi-blocked">{{ "{:,}".format(stats.kpis.requests_blocked) }}</span>
+        <div class="kpi-subtext text-emerald">
+          <strong>ARGUS Protected:</strong> Payloads defused
+        </div>
+      </div>
+    </div>
+
+    <!-- Block Rate -->
+    <div class="card kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">BLOCK RATE</span>
+        <span class="kpi-badge-pct">8.0%</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number">{{ stats.kpis.block_rate }}%</span>
+        <div class="kpi-subtext">Targeted malicious payload ratio</div>
+      </div>
+    </div>
+
+    <!-- Review Queue -->
+    <div class="card kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">REVIEW QUEUE</span>
+        <span class="badge badge-review">Pending Human Review</span>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-number text-amber">{{ stats.kpis.review_queue_pending }}</span>
+        <div class="kpi-subtext">
+          <a href="{{ url_for('review_queue') }}" class="kpi-link">Open Review Queue &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Avg Risk Score & Latency -->
+    <div class="card kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">AVG LATENCY / RISK</span>
+        <span class="badge badge-low">Fast</span>
+      </div>
+      <div class="kpi-body">
+        <div class="kpi-dual">
+          <div>
+            <span class="kpi-number">{{ stats.kpis.avg_latency_ms }}ms</span>
+            <div class="kpi-subtext">P99 Gateway Latency</div>
+          </div>
+          <div class="kpi-divider"></div>
+          <div>
+            <span class="kpi-number">{{ stats.kpis.avg_risk_score }}</span>
+            <div class="kpi-subtext">Mean Risk Score</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       ANALYTICS: THREAT ACTIVITY TIMELINE & THREAT DISTRIBUTION
+       ===================================================================== -->
+  <section class="analytics-row">
+    <!-- Threat Activity Chart -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Threat Activity Timeline</h3>
+          <p class="card-subtitle">Inbound payload volume vs. blocked adversarial attacks over 24h</p>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot dot-allow"></span> Allowed</span>
+          <span class="legend-item"><span class="legend-dot dot-block"></span> Blocked at Perimeter</span>
+          <span class="legend-item"><span class="legend-dot dot-review"></span> Review</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="chart-canvas-wrapper" id="threatTimelineChartWrap">
+          <canvas id="threatTimelineCanvas" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Threat Distribution Breakdown -->
+    <div class="card distribution-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Threat Vector Distribution</h3>
+          <p class="card-subtitle">Breakdown of intercepted attack signatures</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="distribution-list">
+          {% for item in stats.threat_distribution %}
+          <div class="dist-row">
+            <div class="dist-info">
+              <span class="dist-name">{{ item.category }}</span>
+              <span class="badge {% if item.severity == 'CRITICAL' %}badge-critical{% elif item.severity == 'HIGH' %}badge-high{% else %}badge-medium{% endif %}">
+                {{ item.severity }}
+              </span>
+            </div>
+            <div class="dist-bar-track">
+              <div class="dist-bar-fill {% if item.severity == 'CRITICAL' %}fill-critical{% elif item.severity == 'HIGH' %}fill-high{% else %}fill-medium{% endif %}"
+                   style="width: {{ item.percentage }}%;"></div>
+            </div>
+            <div class="dist-meta">
+              <span class="dist-count">{{ "{:,}".format(item.count) }} attacks</span>
+              <span class="dist-pct">{{ item.percentage }}%</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       RECENT THREAT TELEMETRY LOG TABLE
+       ===================================================================== -->
+  <section class="card table-card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">Recent Threat Interceptions</h3>
+        <p class="card-subtitle">Real-time decisions enforced by PromptGuard prior to ARGUS ingestion</p>
+      </div>
+      <div class="table-header-actions">
+        <a href="{{ url_for('monitor') }}" class="btn btn-outline btn-sm">
+          <span>View Full Threat Monitor &rarr;</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Attack Type</th>
+            <th>Prompt Payload Preview</th>
+            <th>Risk Score</th>
+            <th>Confidence</th>
+            <th>Decision</th>
+            <th>ARGUS Exposure</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for threat in recent_threats %}
+          <tr>
+            <td class="time-cell">{{ threat.timestamp }}</td>
+            <td>
+              <span class="badge {% if threat.severity == 'CRITICAL' %}badge-critical{% elif threat.severity == 'HIGH' %}badge-high{% elif threat.severity == 'MEDIUM' %}badge-medium{% else %}badge-low{% endif %}">
+                {{ threat.attack_type }}
+              </span>
+            </td>
+            <td class="snippet-cell" title="{{ threat.prompt_snippet }}">
+              {{ threat.prompt_snippet }}
+            </td>
+            <td>
+              <span class="score-indicator {% if threat.risk_score >= 75 %}score-danger{% elif threat.risk_score >= 40 %}score-warning{% else %}score-safe{% endif %}">
+                {{ threat.risk_score }}
+              </span>
+            </td>
+            <td>
+              <span class="text-secondary font-mono">{{ threat.confidence }}%</span>
+            </td>
+            <td>
+              <span class="badge {% if threat.decision == 'BLOCK' %}badge-block{% elif threat.decision == 'REVIEW' %}badge-review{% else %}badge-allow{% endif %}">
+                {{ threat.decision }}
+              </span>
+            </td>
+            <td>
+              {% if threat.argus_exposed %}
+                <span class="argus-tag tag-forwarded">
+                  <span class="status-dot dot-allow"></span>
+                  <span>Forwarded (Safe)</span>
+                </span>
+              {% else %}
+                <span class="argus-tag tag-defended">
+                  <span class="status-dot dot-block"></span>
+                  <span>Zero Exposure</span>
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

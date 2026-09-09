@@ -1,0 +1,23 @@
+{
+  "name": "PromptAstra Security Platform",
+  "short_name": "PromptAstra",
+  "description": "AI Perimeter Defense & Threat Interception Gateway",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060A12",
+  "theme_color": "#060A12",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/static/assets/logo/PromptAstra_logo.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/static/assets/logo/PromptAstra_logo.ico",
+      "sizes": "192x192 512x512",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    }
+  ]
+}

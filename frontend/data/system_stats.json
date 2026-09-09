@@ -1,0 +1,73 @@
+{
+  "kpis": {
+    "total_requests": 142850,
+    "threats_detected": 12840,
+    "requests_blocked": 11420,
+    "requests_reviewed": 1420,
+    "requests_allowed": 130010,
+    "block_rate": 8.0,
+    "review_rate": 1.0,
+    "allow_rate": 91.0,
+    "avg_risk_score": 14.2,
+    "avg_latency_ms": 18.4,
+    "active_policies": 16,
+    "review_queue_pending": 7
+  },
+  "protection_status": {
+    "gateway_state": "ACTIVE",
+    "gateway_name": "PROMPTGUARD",
+    "protected_system": "ARGUS",
+    "argus_state": "ISOLATED_AND_SECURE",
+    "inspection_mode": "ENFORCING",
+    "latency_p99": "32ms",
+    "demo_mode": true
+  },
+  "threat_distribution": [
+    { "category": "Prompt Injection", "count": 4820, "percentage": 37.5, "severity": "CRITICAL" },
+    { "category": "Jailbreak", "count": 2950, "percentage": 23.0, "severity": "CRITICAL" },
+    { "category": "Indirect Injection", "count": 1840, "percentage": 14.3, "severity": "HIGH" },
+    { "category": "Data Exfiltration", "count": 1210, "percentage": 9.4, "severity": "HIGH" },
+    { "category": "Tool Manipulation", "count": 930, "percentage": 7.2, "severity": "HIGH" },
+    { "category": "Obfuscation", "count": 680, "percentage": 5.3, "severity": "HIGH" },
+    { "category": "Instruction Override", "count": 410, "percentage": 3.2, "severity": "MEDIUM" }
+  ],
+  "hourly_activity": [
+    { "time": "00:00", "allowed": 4200, "blocked": 310, "reviewed": 42 },
+    { "time": "02:00", "allowed": 3800, "blocked": 280, "reviewed": 31 },
+    { "time": "04:00", "allowed": 3100, "blocked": 190, "reviewed": 25 },
+    { "time": "06:00", "allowed": 4600, "blocked": 390, "reviewed": 50 },
+    { "time": "08:00", "allowed": 8900, "blocked": 720, "reviewed": 94 },
+    { "time": "10:00", "allowed": 14200, "blocked": 1280, "reviewed": 160 },
+    { "time": "12:00", "allowed": 13800, "blocked": 1150, "reviewed": 145 },
+    { "time": "14:00", "allowed": 15400, "blocked": 1420, "reviewed": 180 },
+    { "time": "16:00", "allowed": 16100, "blocked": 1510, "reviewed": 192 },
+    { "time": "18:00", "allowed": 12300, "blocked": 1020, "reviewed": 130 },
+    { "time": "20:00", "allowed": 9400, "blocked": 790, "reviewed": 98 },
+    { "time": "22:00", "allowed": 6100, "blocked": 480, "reviewed": 60 }
+  ],
+  "evaluation_metrics": {
+    "dataset_label": "Sample Evaluation Dataset (v2.4 - 10,000 Adversarial & Benign Cases)",
+    "accuracy": 98.4,
+    "precision": 97.8,
+    "recall": 98.9,
+    "f1_score": 98.3,
+    "false_positive_rate": 1.2,
+    "false_negative_rate": 1.1,
+    "total_test_cases": 10000,
+    "confusion_matrix": {
+      "true_positive": 4945,
+      "false_positive": 60,
+      "true_negative": 4895,
+      "false_negative": 100
+    },
+    "category_performance": [
+      { "category": "Prompt Injection", "tested": 2500, "detected": 2480, "accuracy": 99.2 },
+      { "category": "Jailbreak (DAN / Persona)", "tested": 2000, "detected": 1978, "accuracy": 98.9 },
+      { "category": "Indirect Injection", "tested": 1500, "detected": 1470, "accuracy": 98.0 },
+      { "category": "Data Exfiltration", "tested": 1200, "detected": 1182, "accuracy": 98.5 },
+      { "category": "Tool Manipulation", "tested": 1000, "detected": 975, "accuracy": 97.5 },
+      { "category": "Obfuscation (Base64/Hex)", "tested": 800, "detected": 780, "accuracy": 97.5 },
+      { "category": "Instruction Override", "tested": 1000, "detected": 965, "accuracy": 96.5 }
+    ]
+  }
+}

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Review Queue · PromptAstra PromptGuard{% endblock %}
+{% block page_title %}Review Queue{% endblock %}
+{% block page_subtitle %}Human-in-the-Loop Security Governance & Quarantine Workbench{% endblock %}
+
+
+
+{% block content %}
+<div class="review-container">
+
+  <!-- =====================================================================
+       REVIEW CONSOLE HEADER NOTICE
+       ===================================================================== -->
+  <section class="card review-notice-card">
+    <div class="notice-icon-box">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <div class="notice-content">
+      <div class="notice-title">Human-in-the-Loop Security Quarantine</div>
+      <p class="notice-desc">
+        Inbound prompts with borderline policy tension or ambiguous semantic context (Risk 40–74) are held here. 
+        <strong class="text-white">These payloads are quarantined and have NOT been dispatched to ARGUS.</strong>
+      </p>
+    </div>
+    <div class="demo-badge-wrap">
+      <span class="badge badge-review">DEMO WORKBENCH</span>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       QUEUE ITEMS TABLE
+       ===================================================================== -->
+  <section class="card table-card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">Pending Quarantine Queue</h3>
+        <p class="card-subtitle">Review items requiring security analyst intervention</p>
+      </div>
+      <div class="queue-meta font-mono text-muted text-11">
+        <span>Items Pending: <strong class="text-amber" id="queuePendingCount">{{ queue_items | length }}</strong></span>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table" id="reviewTable">
+        <thead>
+          <tr>
+            <th>Event ID</th>
+            <th>Timestamp</th>
+            <th>Classification</th>
+            <th>Risk</th>
+            <th>Quarantined Prompt Preview</th>
+            <th>Current Status</th>
+            <th>Intervention</th>
+          </tr>
+        </thead>
+        <tbody id="reviewTableBody">
+          {% for item in queue_items %}
+          <tr id="row-{{ item.id }}" data-item-id="{{ item.id }}" data-json="{{ item | tojson | forceescape }}">
+            <td class="font-mono text-cyan font-semibold">{{ item.id }}</td>
+            <td class="time-cell">{{ item.timestamp }}</td>
+            <td>
+              <span class="badge badge-medium">{{ item.attack_type }}</span>
+            </td>
+            <td>
+              <span class="score-indicator score-warning">{{ item.risk_score }}</span>
+            </td>
+            <td class="snippet-cell" title="{{ item.prompt_snippet }}">
+              {{ item.prompt_snippet }}
+            </td>
+            <td>
+              <span class="status-pill status-quarantine font-mono" id="status-{{ item.id }}">
+                {{ item.status }}
+              </span>
+            </td>
+            <td>
+              <button type="button" class="btn btn-primary btn-sm btn-open-review" data-id="{{ item.id }}">
+                Review Payload
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div id="reviewEmptyState" class="empty-state {% if queue_items | length > 0 %}hide-empty{% endif %}">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <div class="empty-title">All Quarantine Items Cleared</div>
+      <div class="empty-subtitle">PromptGuard gateway currently has zero pending requests in the review queue.</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       HUMAN REVIEW MODAL DRAWER
+       ===================================================================== -->
+  <div id="reviewActionModal" class="modal-overlay hide-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="badge badge-review">QUARANTINE REVIEW</span>
+          <h3 class="modal-title" id="revModalId">Review Event</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="btnRevClose">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-top-grid">
+          <div>
+            <span class="modal-lbl">ATTACK CATEGORY:</span>
+            <div class="modal-val font-semibold" id="revCategory">Instruction Override</div>
+          </div>
+          <div>
+            <span class="modal-lbl">TIMESTAMP:</span>
+            <div class="modal-val font-mono" id="revTimestamp">2026-09-07</div>
+          </div>
+          <div>
+            <span class="modal-lbl">HEURISTIC RISK SCORE:</span>
+            <div class="modal-val font-mono font-bold text-amber" id="revRisk">62 / 100</div>
+          </div>
+          <div>
+            <span class="modal-lbl">ARGUS EXPOSURE:</span>
+            <div class="modal-val font-mono font-bold text-emerald">HELD (ZERO EXPOSURE)</div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <span class="modal-lbl">QUARANTINED PROMPT PAYLOAD:</span>
+          <pre class="modal-code-box" id="revPayload"></pre>
+        </div>
+
+        <div class="modal-section">
+          <span class="modal-lbl">ENGINE EXPLANATION:</span>
+          <p class="modal-explanation-text" id="revExplanation"></p>
+        </div>
+
+        <div class="modal-section">
+          <span class="modal-lbl">OPERATOR AUDIT NOTE (OPTIONAL):</span>
+          <input type="text" id="revAnalystNote" class="search-input" placeholder="e.g. Authorized under internal test protocol...">
+        </div>
+      </div>
+
+      <div class="modal-footer review-footer-actions">
+        <span class="demo-action-notice font-mono text-muted text-11">
+          * Actions executed in Demo Mode for presentation
+        </span>
+        <div class="action-buttons-group">
+          <button type="button" class="btn btn-danger btn-sm btn-exec-action" data-action="REJECT">
+            Reject & Quarantine (Block)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm btn-exec-action" data-action="ESCALATE">
+            Escalate to SOC
+          </button>
+          <button type="button" class="btn btn-success btn-sm btn-exec-action" data-action="APPROVE">
+            Approve & Forward to ARGUS
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/review_queue.js') }}"></script>
+{% endblock %}
